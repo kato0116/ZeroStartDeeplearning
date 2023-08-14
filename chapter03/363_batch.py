@@ -45,17 +45,17 @@ def predict(network, x):
     a3 = np.dot(z2,W3) + b3
     y  = softmax(a3)
     return y
-    
-x, t = get_data()
+
+x,t = get_data()
 network = init_network()
+
+batch_size = 100 # バッチ数
 accuracy_cnt = 0
 
-for i in range(len(x)):
-    y = predict(network,x[i])
-    p = np.argmax(y) # 配列yの最も大きい値のインデックスを取りだす
-    # 与えられたラベルと比較する
-    if p==t[i]:
-        accuracy_cnt += 1
-    print(y)
-print(x.shape, t.shape)
-print("Accuracy:" + str(float(accuracy_cnt)/len(x)))
+for i in range(0,len(x),batch_size):
+    x_batch = x[i:i+batch_size]
+    y_batch = predict(network,x_batch)
+    p = np.argmax(y_batch,axis=1)
+    accuracy_cnt += np.sum(p==t[i:i+batch_size])
+    
+print("Accuracy:", str(float(accuracy_cnt)/len(x)))
