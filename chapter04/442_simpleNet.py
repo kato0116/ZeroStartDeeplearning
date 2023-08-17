@@ -1,5 +1,6 @@
 import numpy as np
-from common.functions import sigmoid,softmax,cross_entropy_error
+from keras.datasets import mnist
+from common.functions import *
 
 class simpleNet():
     def __init__(self):

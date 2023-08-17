@@ -29,13 +29,25 @@ def softmax(x):
     return y
 
 # 交差エントロピー誤差の計算
+## one_hot表現の場合
 def cross_entropy_error(y,t):
+    if y.ndim==1:
+        t = t.reshape(1,t.size)
+        y = y.reshape(1,y.size)
+        
+    # 教師データがone-hot-vectorの場合、正解ラベルのインデックスに変換
+    if t.size == y.size:
+        t = t.argmax(axis=1)
+    
+    batch_size = y.shape[0]
     delta = 1e-7
-    return -np.sum(t*np.log(y+delta))
+    return -np.sum(np.log(y[np.arange(batch_size),t]+delta))/batch_size
 
-# 勾配の計算
-def numerical_gradient(f, x):
+
+# 勾配の計算(2変数に対応)
+def numerical_gradient_2d(f, x):
     h = 1e-4
+    print(x.size)
     grad = np.zeros_like(x)  # 勾配を0で初期化
     for i in range(x.size):
         tmp = x[i]
@@ -51,6 +63,28 @@ def numerical_gradient(f, x):
         # 勾配
         grad[i] = (fxh1 - fxh2) / (2 * h)  # 修正: '+' を '-' に変更
     return grad
+
+# 勾配の計算(多次元に対応)
+def numerical_gradient(f,x):
+    h = 1e-4
+    grad = np.zeros_like(x)
+    
+    it = np.nditer(x,flags=['multi_index'])
+    while not it.finished:
+        idx = it.multi_index # 現在のインデックスを表示
+        tmp_val = x[idx] # 現在のxの値をコピー
+        
+        # f(x+h)
+        x[idx] = tmp_val + h
+        fxh1   = f()
+        # f(x-h)
+        x[idx] = tmp_val - h
+        fxh2   = f()
+        
+        grad[idx] = (fxh1-fxh2)/(2*h)
+        x[idx]    = tmp_val
+        it.iternext() # 次の要素に移動
+    return grad 
 
 # lrは学習率, step_numは試行回数
 def gradient_descent(f, init_x, lr=0.01, step_num=100):
