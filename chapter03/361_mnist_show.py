@@ -17,9 +17,9 @@ print(t_train.shape) # 60000,
 print(x_test.shape)  # 10000,784
 print(t_test.shape)  # 10000,
 
-img = x_train[0]
-label = t_train[0]
+img = x_test[9986]
+label = t_test[9986]
 print(label)
 
 img = img.reshape(28,28)
-# img_show(img)
+img_show(img)

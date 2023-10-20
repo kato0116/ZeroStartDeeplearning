@@ -5,12 +5,15 @@ from PIL import Image
 
 def get_data(normalize=True,flatten=True,one_hot_label=True,num_class=10):
     (x_train, t_train), (x_test, t_test)= mnist.load_data()
+    # 正規化
     if normalize==True:
          x_train = x_train/255.0
          x_test  = x_test/255.0
+    # 入力画像を1次元に表現
     if flatten==True:
         x_train = x_train.reshape((x_train.shape[0],-1))
         x_test = x_test.reshape((x_test.shape[0],-1))
+    # 0～9のラベルを[0,0,....,1]の0,1で表現
     if one_hot_label==True:
         t_train = np.eye(num_class,dtype=int)[t_train]  # One-hotエンコーディングを適用
         t_test = np.eye(num_class,dtype=int)[t_test]    # One-hotエンコーディングを適用
@@ -31,6 +34,7 @@ def softmax(x):
 # 交差エントロピー誤差の計算
 ## one_hot表現の場合
 def cross_entropy_error(y,t):
+    
     if y.ndim==1:
         t = t.reshape(1,t.size)
         y = y.reshape(1,y.size)
