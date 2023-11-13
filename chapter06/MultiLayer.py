@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from keras.datasets import mnist, cifar10
 from collections import OrderedDict
-from optimizer import *
+from common.optimizer import *
 
 # データの取得
 def get_data(normalize=True,flatten=True,one_hot_label=True,num_class=10):
@@ -83,7 +83,7 @@ def numerical_gradient(f, x):
     return grad
 
 # ReLUレイヤ
-class ReLULayer:
+class ReLU:
     def __init__(self):
         self.mask = None
     def forward(self, x):
